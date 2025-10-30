@@ -1,0 +1,25 @@
+digraph G {
+rankdir = "LR";
+node_0 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 0 | data = 0 | next = 1 | prev = 4"; ]
+node_1 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 1 | data = 5 | next = 3 | prev = 0"; ]
+node_2 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 2 | data = 20 | next = 5 | prev = -1"; ]
+node_3 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 3 | data = 9 | next = 4 | prev = 1"; ]
+node_4 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 4 | data = 7 | next = 0 | prev = 3"; ]
+node_5 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 5 | data = 0 | next = 6 | prev = -1"; ]
+node_6 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 6 | data = 0 | next = 0 | prev = -1"; ]
+edge [color="#000000", fontcolor="#000000"];
+node_0 -> node_1
+node_1 -> node_2
+node_2 -> node_3
+node_3 -> node_4
+node_4 -> node_5
+node_5 -> node_6
+edge [color="#81D1D0", fontcolor="#000000"];
+node_0 -> node_1
+node_1 -> node_3
+node_2 -> node_5
+node_3 -> node_4
+node_4 -> node_0
+node_5 -> node_6
+}
+
