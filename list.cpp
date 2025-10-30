@@ -219,16 +219,23 @@ void ListDump(list_t *list){
         fprintf(list_file, "node_%d [rank = 1; shape=Mrecord; style=filled; fillcolor = \"#FFC0CB\"; color = \"#FC7FC0\"; label = \"index = %d | data = %d | next = %d | prev = %d\"; ]\n", i, i, list->data[i], list->next[i], list->prev[i]);
     }
 // Прозрачные ребра для упорядоченного списка
-    fprintf(list_file, "edge [color=\"#000000\", fontcolor=\"#000000\"];\n");
+    fprintf(list_file, "edge [color=\"#FFFFFF\", fontcolor=\"#000000\"];\n");
     for (int i = 0; i < list->size - 1; i++){
         fprintf(list_file, "node_%d -> node_%d\n", i, i + 1);
     }
 // Ребра next
-    fprintf(list_file, "edge [color=\"#81D1D0\", fontcolor=\"#000000\"];\n");
+    fprintf(list_file, "edge [color=\"#4169E1\", fontcolor=\"#000000\", constraint=false;];\nsplines=ortho;\n");
     for (int i = 0; i < list->size - 1; i++){
         fprintf(list_file, "node_%d -> node_%d\n", i, list->next[i]);
     }
-
+// Ребра prev
+    fprintf(list_file, "edge [color=\"#DC143C\", fontcolor=\"#000000\", constraint=false;];\nsplines=ortho;\n");
+    for (int i = 0; i < list->size - 1; i++){
+        int prev_num = list->prev[i];
+        if (prev_num >= 0){
+            fprintf(list_file, "node_%d -> node_%d\n", i, list->prev[i]);
+        }
+    }
     fprintf(list_file, "}\n");
 }
 
