@@ -25,6 +25,9 @@ list_err_t ListInit(list_t *list, int size){
     list->next = (int *) calloc(list->size, sizeof(int));
 
     list->prev = (int *) calloc(list->size, sizeof(int));
+
+    list->next[0] = 0;
+    list->prev[0] = 0;
     ListEmptyIndex(list);
 
     list->free = 1;
@@ -38,19 +41,17 @@ list_err_t ListInit(list_t *list, int size){
 }
 
 void ListEmptyIndex(list_t *list){
-    list->next[0] = 0;
-    list->prev[0] = 0;
     int i = 1;
     for (; i < list->size - 1; i++){
         list->next[i] = i + 1;
         list->prev[i] = -1;
     }
 
-    list->next[i] = 0;
+    list->next[i] = -1;
     list->prev[i] = -1;
 }
 
-bool ListFull(const list_t *list)
+bool ListAlmostFull(const list_t *list)
 {
     int free_cnt = 0;
 
@@ -60,11 +61,10 @@ bool ListFull(const list_t *list)
         }
     }
 
-    return free_cnt == 0;
+    return free_cnt <= 1;
 }
 
-int ListSizeExtend(list_t *list){
-
+int ListSizeExtend(list_t *list) {
     int *new_data = NULL;
     int *new_next = NULL;
     int *new_prev = NULL;
@@ -75,7 +75,7 @@ int ListSizeExtend(list_t *list){
     new_next = (int *) realloc(list->next, new_size * sizeof(int));
     new_prev = (int *) realloc(list->prev, new_size * sizeof(int));
 
-    if (new_data == NULL || new_next == NULL || new_prev == NULL){
+    if (new_data == NULL || new_next == NULL || new_prev == NULL) {
         fprintf(stderr, "Error in ListSizeExtand() in realloc.\n");
         ListDump(list);
         return 0;
@@ -87,12 +87,16 @@ int ListSizeExtend(list_t *list){
 
     size_t i = list->size;
     for (; i < new_size - 1; i++){
+        list->data[i] = 0;
         list->next[i] = i + 1;
         list->prev[i] = -1;
     }
 
-    list->next[i] = 0;
+    list->data[i] = 0;
+    list->next[i] = -1;
     list->prev[i] = -1;
+
+    list->next[list->free] = list->size;
 
     list->size = new_size;
     return 0;
@@ -102,9 +106,8 @@ list_err_t ListInsert(list_t *list, int index, int number){
 
     ListVerify(list, index);
 
-    if (index > list->free){
-        fprintf(stderr, "Error in ListInsert(). The number of index is bigger than size of list.\n");
-        return LIST_OUT_OF_RANGE;
+    if (ListAlmostFull(list)){
+        ListSizeExtend(list);
     }
 
     if (list->free > list->size){
@@ -112,12 +115,11 @@ list_err_t ListInsert(list_t *list, int index, int number){
         return LIST_OUT_OF_RANGE;
     }
 
+// __PRETTY_FUNCTION__
+// __func__
+
     if (index == 0){
         return ListInsertFirst(list, index, number);
-    }
-
-    if (ListFull(list)){
-        ListSizeExtend(list);
     }
 
     int new_free = list->next[list->free];
@@ -160,16 +162,26 @@ list_err_t ListDelete(list_t *list, int index){
     ListVerify(list, index);
 
     if (ListEmpty(list)){
-        fprintf(stderr, "Error in ListDelete(). List is empty. Can not pop the number to stack.\n");
+        fprintf(stderr, "Error in ListDelete(). List is empty. Can not delete number from list.\n");
+        fprintf(stderr, "Number of iteration: %d\n", list->cnt_png);
         return LIST_EMPTY;
     }
 
     int new_free = list->next[index];
 
+    if (index == 0 && list->prev[list->next[0]] == 0){
+        ListEmptyIndex(list);
+        list->free = 1;
+        list->next[0] = 0;
+        list->prev[0] = 0;
+        return LIST_OK;
+    }
+
     list->next[index] = list->next[new_free];
 
     list->prev[list->next[new_free]] = index;
 
+    list->data[new_free] = 0;
     list->next[new_free] = list->free;
     list->prev[new_free] = -1;
 
@@ -194,7 +206,7 @@ int ListVerify(list_t *list, int index){
     }
 
     if (list->prev[list->next[index]] != index){
-        err = LIST_MIXED;
+        err = LIST_BREAK;
     }
 
     if (err != LIST_OK){
@@ -216,27 +228,46 @@ void ListDump(list_t *list){
 
 // Создание узлов
     for (int i = 0; i < list->size; i++){
-        fprintf(list_file, "node_%d [rank = 1; shape=Mrecord; style=filled; fillcolor = \"#FFC0CB\"; color = \"#FC7FC0\"; label = \"index = %d | data = %d | next = %d | prev = %d\"; ]\n", i, i, list->data[i], list->next[i], list->prev[i]);
+        fprintf(list_file, "node_%d [rank = 1; shape=Mrecord; style=filled; fillcolor = \"#FFC0CB\"; color = \"#FC7FC0\"; label = \"index = %d | data = %d | {prev = %d | next = %d}\"; ]\n", i, i, list->data[i], list->prev[i], list->next[i]);
     }
 // Прозрачные ребра для упорядоченного списка
     fprintf(list_file, "edge [color=\"#FFFFFF\", fontcolor=\"#000000\"];\n");
     for (int i = 0; i < list->size - 1; i++){
-        fprintf(list_file, "node_%d -> node_%d\n", i, i + 1);
+        fprintf(list_file, "node_%d -> node_%d;\n", i, i + 1);
     }
 // Ребра next
     fprintf(list_file, "edge [color=\"#4169E1\", fontcolor=\"#000000\", constraint=false;];\nsplines=ortho;\n");
-    for (int i = 0; i < list->size - 1; i++){
-        fprintf(list_file, "node_%d -> node_%d\n", i, list->next[i]);
+    for (int i = 0; i < list->size; i++){
+        int next_index = list->next[i];
+        if (next_index >= 0 && next_index < list->size){
+            fprintf(list_file, "node_%d -> node_%d;\n", i, list->next[i]);
+        }
     }
 // Ребра prev
     fprintf(list_file, "edge [color=\"#DC143C\", fontcolor=\"#000000\", constraint=false;];\nsplines=ortho;\n");
     for (int i = 0; i < list->size - 1; i++){
-        int prev_num = list->prev[i];
-        if (prev_num >= 0){
-            fprintf(list_file, "node_%d -> node_%d\n", i, list->prev[i]);
+        int prev_index = list->prev[i];
+        if (prev_index >= 0 && prev_index < list->size){
+            fprintf(list_file, "node_%d -> node_%d;\n", i, list->prev[i]);
         }
     }
     fprintf(list_file, "}\n");
+    fclose(list_file);
+
+    ListMakePng(list);
+}
+
+void ListMakePng(list_t *list){
+    char command[1000];
+
+    snprintf(command, sizeof(command), "dot -Tpng dump.dot -o image_%d.png", list->cnt_png);
+    int result = system(command);
+
+    if (result != 0){
+        fprintf(stderr, "Error in ListMakePng() in creating image_%d.png, result = %d\n", list->cnt_png, result);
+    }
+
+    list->cnt_png++;
 }
 
 

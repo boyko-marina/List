@@ -1,25 +1,57 @@
 digraph G {
 rankdir = "LR";
-node_0 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 0 | data = 0 | next = 1 | prev = 4"; ]
-node_1 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 1 | data = 5 | next = 3 | prev = 0"; ]
-node_2 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 2 | data = 20 | next = 5 | prev = -1"; ]
-node_3 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 3 | data = 9 | next = 4 | prev = 1"; ]
-node_4 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 4 | data = 7 | next = 0 | prev = 3"; ]
-node_5 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 5 | data = 0 | next = 6 | prev = -1"; ]
-node_6 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 6 | data = 0 | next = 0 | prev = -1"; ]
-edge [color="#000000", fontcolor="#000000"];
-node_0 -> node_1
-node_1 -> node_2
-node_2 -> node_3
-node_3 -> node_4
-node_4 -> node_5
-node_5 -> node_6
-edge [color="#81D1D0", fontcolor="#000000"];
-node_0 -> node_1
-node_1 -> node_3
-node_2 -> node_5
-node_3 -> node_4
-node_4 -> node_0
-node_5 -> node_6
+node_0 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 0 | data = 0 | {prev = 8 | next = 1}"; ]
+node_1 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 1 | data = 21 | {prev = 0 | next = 2}"; ]
+node_2 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 2 | data = 32 | {prev = 1 | next = 3}"; ]
+node_3 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 3 | data = 23 | {prev = 2 | next = 4}"; ]
+node_4 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 4 | data = 34 | {prev = 3 | next = 5}"; ]
+node_5 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 5 | data = 25 | {prev = 4 | next = 6}"; ]
+node_6 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 6 | data = 26 | {prev = 5 | next = 7}"; ]
+node_7 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 7 | data = 27 | {prev = 6 | next = 8}"; ]
+node_8 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 8 | data = 28 | {prev = 7 | next = 0}"; ]
+node_9 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 9 | data = 0 | {prev = -1 | next = 10}"; ]
+node_10 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 10 | data = 0 | {prev = -1 | next = 11}"; ]
+node_11 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 11 | data = 0 | {prev = -1 | next = 12}"; ]
+node_12 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 12 | data = 0 | {prev = -1 | next = 13}"; ]
+node_13 [rank = 1; shape=Mrecord; style=filled; fillcolor = "#FFC0CB"; color = "#FC7FC0"; label = "index = 13 | data = 0 | {prev = -1 | next = -1}"; ]
+edge [color="#FFFFFF", fontcolor="#000000"];
+node_0 -> node_1;
+node_1 -> node_2;
+node_2 -> node_3;
+node_3 -> node_4;
+node_4 -> node_5;
+node_5 -> node_6;
+node_6 -> node_7;
+node_7 -> node_8;
+node_8 -> node_9;
+node_9 -> node_10;
+node_10 -> node_11;
+node_11 -> node_12;
+node_12 -> node_13;
+edge [color="#4169E1", fontcolor="#000000", constraint=false;];
+splines=ortho;
+node_0 -> node_1;
+node_1 -> node_2;
+node_2 -> node_3;
+node_3 -> node_4;
+node_4 -> node_5;
+node_5 -> node_6;
+node_6 -> node_7;
+node_7 -> node_8;
+node_8 -> node_0;
+node_9 -> node_10;
+node_10 -> node_11;
+node_11 -> node_12;
+node_12 -> node_13;
+edge [color="#DC143C", fontcolor="#000000", constraint=false;];
+splines=ortho;
+node_0 -> node_8;
+node_1 -> node_0;
+node_2 -> node_1;
+node_3 -> node_2;
+node_4 -> node_3;
+node_5 -> node_4;
+node_6 -> node_5;
+node_7 -> node_6;
+node_8 -> node_7;
 }
-

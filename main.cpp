@@ -12,15 +12,29 @@ int main( )
 {
     list_t list = {};
     ListInit(&list, 7);
-    ListInsert(&list, 0, 5);
-    ListInsert(&list, 1, 20);
-    ListInsert(&list, 2, 9);
-    ListInsert(&list, 3, 7);
-    ListDelete(&list, 1);
-    // ListInsert(&list, 4, 14);
-    // ListInsert(&list, 5, 31);
-    // ListDelete(&list, 3);
-    // ListInsert(&list, 1);
     ListDump(&list);
-
+    ListInsert(&list, 0, 21);
+    ListDump(&list);
+    ListInsert(&list, 1, 22);
+    ListDump(&list);
+    ListInsert(&list, 2, 23);
+    ListDump(&list);
+    ListInsert(&list, 3, 24);
+    ListDump(&list);
+    ListDelete(&list, 1);
+    ListDump(&list);
+    ListInsert(&list, 1, 32);
+    ListDump(&list);
+    ListInsert(&list, 4, 25);
+    ListDump(&list);
+    ListDelete(&list, 3);
+    ListDump(&list);
+    ListInsert(&list, 3, 34);
+    ListDump(&list);
+    ListInsert(&list, 5, 26);
+    ListDump(&list);
+    ListInsert(&list, 6, 27);
+    ListDump(&list);
+    ListInsert(&list, 7, 28);
+    ListDump(&list);
 }
