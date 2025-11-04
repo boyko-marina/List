@@ -19,16 +19,21 @@ typedef enum {
     LIST_BREAK           = 1
 } list_err_t;
 
-list_err_t ListInit         (list_t *list, int size);
-void ListEmptyIndex         (list_t *list);
-bool ListAlmostFull         (const list_t *list);
-int ListSizeExtend          (list_t *list);
-list_err_t ListInsert       (list_t *list, int index, int number);
-list_err_t ListInsertFirst  (list_t *list, int index, int number);
-bool ListEmpty(const list_t *list);
-list_err_t ListDelete(list_t *list, int index);
-int ListVerify(list_t *list, int index);
-void ListDump(list_t *list);
-void ListMakePng(list_t *list);
+list_err_t ListInit        (list_t *list, int size);
+void ListEmptyIndex        (list_t *list);
+bool ListAlmostFull        (const list_t *list);
+bool ListEmpty             (const list_t *list);
+int ListSizeExtend         (list_t *list);
+list_err_t ListInsert      (list_t *list, int index, int number);
+list_err_t ListInsertFirst (list_t *list, int index, int number);
+list_err_t ListDelete      (list_t *list, int index);
+int ListVerify             (list_t *list, int index);
+void ListDump              (list_t *list);
+void ListMakePng           (list_t *list);
+void ListMakeNode          (FILE *list_file, list_t *list);
+void ListMakeConnects      (FILE *list_file, list_t *list);
+void ListMakeConnectsNext  (FILE *list_file, list_t *list);
+void ListMakeConnectsPrev  (FILE *list_file, list_t *list);
+
 
 #endif

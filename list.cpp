@@ -9,9 +9,6 @@
 #include "list.h"
 
 list_err_t ListInit(list_t *list, int size){
-
-    assert(list != NULL);
-
     if (list == NULL){
         fprintf(stderr, "Error in ListInit(). List is null.\n");
         return LIST_NULL_PTR;
@@ -51,8 +48,7 @@ void ListEmptyIndex(list_t *list){
     list->prev[i] = -1;
 }
 
-bool ListAlmostFull(const list_t *list)
-{
+bool ListAlmostFull(const list_t *list){
     int free_cnt = 0;
 
     for (int i = 1; i < list->size; i++){
@@ -103,7 +99,6 @@ int ListSizeExtend(list_t *list) {
 }
 
 list_err_t ListInsert(list_t *list, int index, int number){
-
     ListVerify(list, index);
 
     if (ListAlmostFull(list)){
@@ -111,7 +106,8 @@ list_err_t ListInsert(list_t *list, int index, int number){
     }
 
     if (list->free > list->size){
-        fprintf(stderr, "Error in ListInsert(). The index of list->free is bigger than size of list.\n");
+        fprintf(stderr, "Error in ListInsert().The index of list->free"
+                        "is bigger than size of list.\n");
         return LIST_OUT_OF_RANGE;
     }
 
@@ -138,7 +134,6 @@ list_err_t ListInsert(list_t *list, int index, int number){
 }
 
 list_err_t ListInsertFirst(list_t *list, int index, int number){
-
     int new_free = list->next[list->free];
 
     list->data[list->free] = number;
@@ -158,11 +153,11 @@ bool ListEmpty(const list_t *list){
 }
 
 list_err_t ListDelete(list_t *list, int index){
-
     ListVerify(list, index);
 
     if (ListEmpty(list)){
-        fprintf(stderr, "Error in ListDelete(). List is empty. Can not delete number from list.\n");
+        fprintf(stderr, "Error in ListDelete(). List is empty."
+                        "Can not delete number from list.\n");
         fprintf(stderr, "Number of iteration: %d\n", list->cnt_png);
         return LIST_EMPTY;
     }
@@ -227,38 +222,65 @@ void ListDump(list_t *list){
     fprintf(list_file, "digraph G {\nrankdir = \"LR\";\n");
 
 // Создание узлов
-    for (int i = 0; i < list->size; i++){
-        fprintf(list_file, "node_%d [rank = 1; shape=Mrecord; style=filled; fillcolor = \"#FFC0CB\"; color = \"#FC7FC0\"; label = \"index = %d | data = %d | {prev = %d | next = %d}\"; ]\n", i, i, list->data[i], list->prev[i], list->next[i]);
-    }
+    ListMakeNode(list_file, list);
 // Прозрачные ребра для упорядоченного списка
-    fprintf(list_file, "edge [color=\"#FFFFFF\", fontcolor=\"#000000\"];\n");
-    for (int i = 0; i < list->size - 1; i++){
-        fprintf(list_file, "node_%d -> node_%d;\n", i, i + 1);
-    }
+    ListMakeConnects(list_file, list);
 // Ребра next
-    fprintf(list_file, "edge [color=\"#4169E1\", fontcolor=\"#000000\", constraint=false;];\nsplines=ortho;\n");
-    for (int i = 0; i < list->size; i++){
-        int next_index = list->next[i];
-        if (next_index >= 0 && next_index < list->size){
-            fprintf(list_file, "node_%d -> node_%d;\n", i, list->next[i]);
-        }
-    }
+    ListMakeConnectsNext(list_file, list);
 // Ребра prev
-    fprintf(list_file, "edge [color=\"#DC143C\", fontcolor=\"#000000\", constraint=false;];\nsplines=ortho;\n");
-    for (int i = 0; i < list->size - 1; i++){
-        int prev_index = list->prev[i];
-        if (prev_index >= 0 && prev_index < list->size){
-            fprintf(list_file, "node_%d -> node_%d;\n", i, list->prev[i]);
-        }
-    }
+    ListMakeConnectsPrev(list_file, list);
     fprintf(list_file, "}\n");
     fclose(list_file);
 
     ListMakePng(list);
 }
 
+// void ListMakeDumpFile(list_t *list){
+//
+// }
+
+void ListMakeNode(FILE *list_file, list_t *list){
+    for (int i = 0; i < list->size; i++){
+        fprintf(list_file, "node_%d [rank = 1; shape=Mrecord; style=filled; "
+                           "fillcolor = \"#FFC0CB\"; color = \"#FC7FC0\";"
+                           " label = \"index = %d | data = %d | {prev = %d | next = %d}\"; ]\n",
+                            i, i, list->data[i], list->prev[i], list->next[i]);
+    }
+}
+
+void ListMakeConnects(FILE *list_file, list_t *list){
+    fprintf(list_file, "edge [color=\"#FFFFFF\", fontcolor=\"#000000\"];\n");
+    for (int i = 0; i < list->size - 1; i++){
+        fprintf(list_file, "node_%d -> node_%d;\n", i, i + 1);
+    }
+}
+
+void ListMakeConnectsNext(FILE *list_file, list_t *list){
+    fprintf(list_file, "edge [color=\"#4169E1\", fontcolor=\"#000000\", "
+                       "constraint=false;];\nsplines=ortho;\n");
+    for (int i = 0; i < list->size; i++){
+        int next_index = list->next[i];
+        if (next_index >= 0 && next_index < list->size){
+            fprintf(list_file, "node_%d -> node_%d;\n", i, list->next[i]);
+        }
+    }
+}
+
+void ListMakeConnectsPrev(FILE *list_file, list_t *list){
+    fprintf(list_file, "edge [color=\"#DC143C\", fontcolor=\"#000000\", "
+                       "constraint=false;];\nsplines=ortho;\n");
+    for (int i = 0; i < list->size - 1; i++){
+
+        int prev_index = list->prev[i];
+
+        if (prev_index >= 0 && prev_index < list->size){
+            fprintf(list_file, "node_%d -> node_%d;\n", i, list->prev[i]);
+        }
+    }
+}
+
 void ListMakePng(list_t *list){
-    char command[1000];
+    char command[50];
 
     snprintf(command, sizeof(command), "dot -Tpng dump.dot -o image_%d.png", list->cnt_png);
     int result = system(command);
