@@ -12,9 +12,13 @@ int main( )
 {
     list_t list = {};
     ListInit(&list, 7);
+    fprintf(stderr, "first dump in\n");
     ListDump(&list);
+    fprintf(stderr, "first dump out\n");
     ListInsert(&list, 0, 21);
+    fprintf(stderr, "second dump in\n");
     ListDump(&list);
+    fprintf(stderr, "second dump out\n");
     ListInsert(&list, 1, 22);
     ListDump(&list);
     ListInsert(&list, 2, 23);
